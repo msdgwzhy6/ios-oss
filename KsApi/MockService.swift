@@ -142,6 +142,9 @@ internal struct MockService: ServiceType {
 
   fileprivate let updateUserSelfError: ErrorEnvelope?
 
+  fileprivate let unwatchProjectMutationResult:
+    Result<GraphMutationUnwatchProjectResponseEnvelope, GraphError>?
+
   fileprivate let watchProjectMutationResult: Result<GraphMutationWatchProjectResponseEnvelope, GraphError>?
 
   internal init(appId: String = "com.kickstarter.kickstarter.mock",
@@ -251,6 +254,8 @@ internal struct MockService: ServiceType {
                 updateProjectNotificationResponse: ProjectNotification? = nil,
                 updateProjectNotificationError: ErrorEnvelope? = nil,
                 updateUserSelfError: ErrorEnvelope? = nil,
+                // swiftlint:disable:next line_length
+                unwatchProjectMutationResult: Result<GraphMutationUnwatchProjectResponseEnvelope, GraphError>? = nil,
                 // swiftlint:disable:next line_length
                 watchProjectMutationResult: Result<GraphMutationWatchProjectResponseEnvelope, GraphError>? = nil) {
 
@@ -431,6 +436,8 @@ internal struct MockService: ServiceType {
     self.updateProjectNotificationError = updateProjectNotificationError
 
     self.updateUserSelfError = updateUserSelfError
+
+    self.unwatchProjectMutationResult = unwatchProjectMutationResult
 
     self.watchProjectMutationResult = watchProjectMutationResult
   }
@@ -1242,6 +1249,11 @@ internal struct MockService: ServiceType {
     return SignalProducer(value: self.updatePledgeResult?.value ?? .template)
   }
 
+  internal func unwatchProject(input: UnwatchProjectInput)
+    -> SignalProducer<GraphMutationUnwatchProjectResponseEnvelope, GraphError> {
+      return producer(for: self.unwatchProjectMutationResult)
+  }
+
   internal func watchProject(input: WatchProjectInput)
     -> SignalProducer<GraphMutationWatchProjectResponseEnvelope, GraphError> {
       return producer(for: self.watchProjectMutationResult)
@@ -1386,7 +1398,9 @@ private extension MockService {
           updatePledgeResult: $1.updatePledgeResult,
           updateProjectNotificationResponse: $1.updateProjectNotificationResponse,
           updateProjectNotificationError: $1.updateProjectNotificationError,
-          updateUserSelfError: $1.updateUserSelfError
+          updateUserSelfError: $1.updateUserSelfError,
+          unwatchProjectMutationResult: $1.unwatchProjectMutationResult,
+          watchProjectMutationResult: $1.watchProjectMutationResult
         )
       }
     )

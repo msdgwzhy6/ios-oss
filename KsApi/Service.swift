@@ -500,6 +500,11 @@ public struct Service: ServiceType {
     return request(.updateUserSelf(user))
   }
 
+  public func unwatchProject(input: UnwatchProjectInput) ->
+    SignalProducer<GraphMutationUnwatchProjectResponseEnvelope, GraphError> {
+      return applyMutation(mutation: UnwatchProjectMutation(input: input))
+  }
+
   public func watchProject(input: WatchProjectInput) ->
     SignalProducer<GraphMutationWatchProjectResponseEnvelope, GraphError> {
       return applyMutation(mutation: WatchProjectMutation(input: input))
